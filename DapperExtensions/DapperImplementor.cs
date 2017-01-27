@@ -140,7 +140,11 @@ namespace DapperExtensions
                 foreach (var prop in entity.GetType().GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)
                     .Where(p => p.Name != triggerIdentityColumn.PropertyInfo.Name))
                 {
-                    dynamicParameters.Add(prop.Name, prop.GetValue(entity, null));
+                    // Ignore ignored Fields 
+                    if (classMap.Properties.Any(p => p.Name == prop.Name && !p.Ignored))
+                    {
+                        dynamicParameters.Add(prop.Name, prop.GetValue(entity, null));
+                    }
                 }
 
                 // defaultValue need for identify type of parameter
